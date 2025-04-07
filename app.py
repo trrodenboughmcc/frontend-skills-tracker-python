@@ -1,6 +1,9 @@
 # Import Flask framework and render_template to display HTML templates
 from flask import Flask, render_template
 
+# Used to access environment variables like PORT for deployment on platforms like Render
+import os
+
 # Create an instance of the Flask app
 app = Flask(__name__)
 
