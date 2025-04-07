@@ -52,16 +52,23 @@ This is a simple web app built with Python and Flask. It lets you list the **ski
         git clone https://github.com/yourusername/skills-tracker.git
         cd skills-tracker
 
-2. (Optional) Create and activate a virtual environment:
+2. Uncomment this line in app.py:
+        app.run(debug=True)
+
+3. Comment the following section:
+        port = int(os.environ.get('PORT', 5000))
+        app.run(host='0.0.0.0', port=port)
+
+4. (Optional) Create and activate a virtual environment:
         python -m venv venv
 
-3. Install Flask:
+5. Install Flask:
         pip install Flask
 
-4. Run the Flask app:
+6. Run the Flask app:
         python app.py
 
-5. Open your browser and go to:
+7. Open your browser and go to:
         http://127.0.0.1:5000
 
 ---
@@ -70,11 +77,19 @@ This is a simple web app built with Python and Flask. It lets you list the **ski
     Here’s how to host your project on Render so anyone can view it online — for free!
 
 ### Step-by-Step
-1. Fork this repo
+1. If you haven't already, fork this repo. 
 
-2. Create a free Render account. Go to https://render.com and sign up using your GitHub account.
+2. If you haven't already pushed your changes to Github, do that as well. 
+    - Be sure that the following section in app.py is commented:
+        app.run(debug=True)
+    
+    - Be sure the following section is uncommented:
+        port = int(os.environ.get('PORT', 5000))
+        app.run(host='0.0.0.0', port=port)
 
-3. On Render, connect your GitHub repo:
+3. Create a free Render account. Go to https://render.com and sign up using your GitHub account.
+
+4. On Render, connect your GitHub repo:
     - Click "New" > "Web Service"
     - Authorize Render to access your GitHub repositories
     - Select your skills-tracker repo
@@ -87,7 +102,7 @@ This is a simple web app built with Python and Flask. It lets you list the **ski
     - Region: Choose one near you
     - Click "Create Web Service"
 
-4. Render will now build your project and give you a live URL where your app will be public
+5. Render will now build your project and give you a live URL where your app will be public
 
 ### How to Update Your App Later
 1. Make changes, push to Github:

@@ -72,5 +72,11 @@ def home():
 # Run the Flask App
 # -----------------------------
 if __name__ == '__main__':
-    # Run in debug mode to auto-reload when changes are made
-    app.run(debug=True)
+    # Uncomment you're running the app locally, comment when you're deploying to Render
+    # app.run(debug=True)
+
+    # Uncomment when you're deploying to Render, comment when you're running locally
+    # Render provides the PORT environment variable
+    port = int(os.environ.get('PORT', 5000))
+    # '0.0.0.0' means the app is available publicly (required for Render)
+    app.run(host='0.0.0.0', port=port)
