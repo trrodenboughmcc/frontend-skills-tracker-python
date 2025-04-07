@@ -1,22 +1,8 @@
 # Skills & Projects Tracker
 
-A full-stack Flask web application that allows users to track the technical skills they are learning and the projects they are building. This tool helps students and early-career professionals stay organized and reflect on their growth over time.
+This is a simple web app built with Python and Flask. It lets you list the **skills** you're learning and the **projects** you've worked on. When you click on a skill, it filters the projects to show only the ones that use that skill. You can run it on your own computer or publish it online for free using a service called [Render](https://render.com).
 
-## Features
-
-- Add and remove technical skills (e.g., Python, SQL, Git)
-- Add and remove project entries, including project name and tech stack
-- Displays tracked items in a clean interface
-- Uses in-memory Python data structures (lists and dictionaries)
-- Includes a `/debug` route to view internal data (for developers)
-
-## Why This Project
-
-This app demonstrates:
-- A practical use of Python lists and dictionaries in a real-world context
-- Full-stack development using Flask and HTML templating
-- Ability to build tools that improve productivity and track progress
-- A student’s initiative to reflect on and manage their technical growth
+---
 
 ## Tech Stack
 
@@ -24,6 +10,41 @@ This app demonstrates:
 - Flask
 - Jinja2 (HTML templating)
 
+---
+
+## Features
+
+- Lists your **skills** as clickable filters
+- Displays your **projects**, with tech used and a "View" link
+- Lets you filter projects by one or more selected skills
+- Fully static data — just edit one Python file to make it your own
+- Free to host, simple to edit, no databases or logins required
+
+---
+
+## How to Add Your Own Skills & Projects
+
+### 1. Open `app.py`
+    At the top, you'll see a dictionary named `tracker`. It has two parts:
+    - `skills`: a list of strings
+    - `projects`: a list of dictionaries, each describing one project
+
+### 2. To add a skill:
+    Just add the skill name to the skills list
+
+### 3. To add a project:
+    Each project needs:
+    - A title
+    - The technologies used (comma-separated)
+    - A link to your code or live site
+    - Example: 
+        {
+            "title": "My Portfolio",
+            "tech": "HTML, CSS, JavaScript",
+            "link": "https://your-portfolio.com"
+        }
+
+---
 
 ## How to Run the App
 
@@ -33,7 +54,6 @@ This app demonstrates:
 
 2. (Optional) Create and activate a virtual environment:
         python -m venv venv
-        source venv/bin/activate  # On Windows: venv\Scripts\activate
 
 3. Install Flask:
         pip install Flask
@@ -43,6 +63,40 @@ This app demonstrates:
 
 5. Open your browser and go to:
         http://127.0.0.1:5000
+
+---
+
+## How to Publish This App Online
+    Here’s how to host your project on Render so anyone can view it online — for free!
+
+### Step-by-Step
+1. Fork this repo
+
+2. Create a free Render account. Go to https://render.com and sign up using your GitHub account.
+
+3. On Render, connect your GitHub repo:
+    - Click "New" > "Web Service"
+    - Authorize Render to access your GitHub repositories
+    - Select your skills-tracker repo
+    - Configure the service:
+    - Name: skills-tracker
+    - Runtime: Python
+    - Build Command: (leave the default selection in there)
+    - Start Command: python app.py
+    - Environment: Python 3
+    - Region: Choose one near you
+    - Click "Create Web Service"
+
+4. Render will now build your project and give you a live URL where your app will be public
+
+### How to Update Your App Later
+1. Make changes, push to Github:
+        git add -A
+        git commit -m "insert summary of changes here"
+        git push 
+
+2. Navigate back to the link that Render gave you - Render will automatically rebuild and redeploy your app 
+
 
 
 

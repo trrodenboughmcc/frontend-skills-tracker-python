@@ -1,44 +1,139 @@
 <!DOCTYPE html>
 <html>
+
 <head>
+    <meta charset="UTF-8">
     <title>Skills & Projects Tracker</title>
+
+    <!-- Link to your custom stylesheet -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+
+    <!-- Optional: Font Awesome for icons (not currently used, but may be used later) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-yaj28VnSllzZQUkQDh3lH2O8P8F2FnjVuRZvnkl8ZpeXBPIBml+nI15nbL4rZHzcA3AunRG1N2CvGqS7ZuEA1g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
+
 <body>
-    <h1>Skills & Projects Tracker</h1>
+    <div class="container">
+        <h1>Skills & Projects Tracker</h1>
 
-    <h2>My Skills</h2>
-    <ul>
-        {% for skill in tracker.skills %}
-            <li>
-                {{ skill }}
-                <a href="{{ url_for('remove_skill', skill=skill) }}">[Remove]</a>
-            </li>
-        {% else %}
-            <li>No skills tracked yet.</li>
-        {% endfor %}
-    </ul>
+        <!-- Skills Section -->
+        <div class="section">
+            <h2>Skills</h2>
 
-    <form method="POST" action="/add-skill">
-        <input name="skill" placeholder="New skill..." required>
-        <button type="submit">Add Skill</button>
-    </form>
+            <!-- List of skills rendered dynamically from Flask -->
+            <ul class="card-list" id="skills-list">
+                {% for skill in tracker.skills %}
+                  <!-- Each skill becomes a selectable filter -->
+                  <li class="card skill-filter" data-skill="{{ skill }}">{{ skill }}</li>
+                {% else %}
+                  <!-- Fallback if no skills are provided -->
+                  <li class="card empty">No skills listed.</li>
+                {% endfor %}
+            </ul>
+        </div>
 
-    <h2>My Projects</h2>
-    <ul>
-        {% for project in tracker.projects %}
-            <li>
-                <strong>{{ project.title }}</strong> – {{ project.tech }}
-                <a href="{{ url_for('remove_project', title=project.title) }}">[Remove]</a>
-            </li>
-        {% else %}
-            <li>No projects added yet.</li>
-        {% endfor %}
-    </ul>
+        <!-- Projects Section -->
+        <div class="section">
+            <h2>Projects</h2>
 
-    <form method="POST" action="/add-project">
-        <input name="title" placeholder="Project title" required>
-        <input name="tech" placeholder="Tech stack" required>
-        <button type="submit">Add Project</button>
-    </form>
+            <!-- Label that shows which skills are currently being used to filter the projects -->
+            <p id="active-skill-label"></p>
+
+            <!-- List of projects rendered dynamically from Flask -->
+            <ul class="card-list" id="project-list">
+                {% for project in tracker.projects %}
+                  <li class="card project" data-tech="{{ project.tech }}">
+                    
+                    <!-- Wrapper for project text content -->
+                    <div class="project-content">
+                      <div class="project-info">
+                        <strong>{{ project.title }}</strong> <!-- Project title -->
+                        <br>
+                        <span class="tech">{{ project.tech }}</span> <!-- Project tech stack -->
+                      </div>
+                    </div>
+
+                    <!-- Show a "View" link if a project has a link, otherwise insert placeholder to preserve layout -->
+                    {% if project.link %}
+                        <div><a href="{{ project.link }}" target="_blank" class="project-link">View</a></div>
+                    {% else %}
+                        <span class="project-link-placeholder"></span>
+                    {% endif %}
+                  </li>
+                {% else %}
+                  <li class="card empty">No projects listed.</li>
+                {% endfor %}
+            </ul>
+
+            <!-- Button to reset all filters -->
+            <button id="clear-filter" style="display:none;">Clear Filter</button>
+        </div>
+    </div>
+
+    <!-- JavaScript for filtering functionality -->
+    <script>
+        // Grab all skill elements, all project elements, and the clear filter button + label
+        const skills = document.querySelectorAll(".skill-filter");
+        const projects = document.querySelectorAll(".project");
+        const clearBtn = document.getElementById("clear-filter");
+        const activeLabel = document.getElementById("active-skill-label");
+
+        // Track which skills are currently selected
+        let selectedSkills = new Set();
+
+        // Add click event to each skill
+        skills.forEach(skillEl => {
+          skillEl.addEventListener("click", () => {
+            const skill = skillEl.dataset.skill;
+
+            // Toggle selected state: remove if already selected, otherwise add
+            if (selectedSkills.has(skill)) {
+              selectedSkills.delete(skill);
+              skillEl.classList.remove("active-skill"); // Remove highlight
+            } else {
+              selectedSkills.add(skill);
+              skillEl.classList.add("active-skill"); // Add highlight
+            }
+
+            // Recalculate which projects to show
+            updateFilteredProjects();
+          });
+        });
+
+        // Clear button resets all selected skills
+        clearBtn.addEventListener("click", () => {
+          selectedSkills.clear();
+          skills.forEach(s => s.classList.remove("active-skill"));
+          updateFilteredProjects();
+        });
+
+        // Core filtering logic
+        function updateFilteredProjects() {
+          if (selectedSkills.size === 0) {
+            // If no skills are selected, show all projects
+            projects.forEach(p => p.style.display = "flex");
+            activeLabel.textContent = "";
+            activeLabel.style.display = "none";
+            clearBtn.style.display = "none";
+          } else {
+            // Convert selected skills into lowercase array
+            const skillsArray = Array.from(selectedSkills).map(s => s.toLowerCase());
+
+            projects.forEach(proj => {
+              const tech = proj.dataset.tech.toLowerCase();
+
+              // Check if project includes ALL selected skills
+              const matches = skillsArray.every(skill => tech.includes(skill));
+              proj.style.display = matches ? "flex" : "none";
+            });
+
+            // Show which skills are being used to filter
+            activeLabel.textContent = `Filtering by skills: ${Array.from(selectedSkills).join(", ")}`;
+            activeLabel.style.display = "block";
+            clearBtn.style.display = "inline-block";
+          }
+        }
+    </script>
 </body>
+
 </html>
