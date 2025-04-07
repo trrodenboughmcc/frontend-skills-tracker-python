@@ -1,0 +1,49 @@
+# Skills & Projects Tracker
+
+A full-stack Flask web application that allows users to track the technical skills they are learning and the projects they are building. This tool helps students and early-career professionals stay organized and reflect on their growth over time.
+
+## Features
+
+- Add and remove technical skills (e.g., Python, SQL, Git)
+- Add and remove project entries, including project name and tech stack
+- Displays tracked items in a clean interface
+- Uses in-memory Python data structures (lists and dictionaries)
+- Includes a `/debug` route to view internal data (for developers)
+
+## Why This Project
+
+This app demonstrates:
+- A practical use of Python lists and dictionaries in a real-world context
+- Full-stack development using Flask and HTML templating
+- Ability to build tools that improve productivity and track progress
+- A student’s initiative to reflect on and manage their technical growth
+
+## Tech Stack
+
+- Python 3
+- Flask
+- Jinja2 (HTML templating)
+
+
+## How to Run the App
+
+1. Clone this repository:
+        git clone https://github.com/yourusername/skills-tracker.git
+        cd skills-tracker
+
+2. (Optional) Create and activate a virtual environment:
+        python -m venv venv
+        source venv/bin/activate  # On Windows: venv\Scripts\activate
+
+3. Install Flask:
+        pip install Flask
+
+4. Run the Flask app:
+        python app.py
+
+5. Open your browser and go to:
+        http://127.0.0.1:5000
+
+
+
+

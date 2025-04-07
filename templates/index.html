@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Skills & Projects Tracker</title>
+</head>
+<body>
+    <h1>Skills & Projects Tracker</h1>
+
+    <h2>My Skills</h2>
+    <ul>
+        {% for skill in tracker.skills %}
+            <li>
+                {{ skill }}
+                <a href="{{ url_for('remove_skill', skill=skill) }}">[Remove]</a>
+            </li>
+        {% else %}
+            <li>No skills tracked yet.</li>
+        {% endfor %}
+    </ul>
+
+    <form method="POST" action="/add-skill">
+        <input name="skill" placeholder="New skill..." required>
+        <button type="submit">Add Skill</button>
+    </form>
+
+    <h2>My Projects</h2>
+    <ul>
+        {% for project in tracker.projects %}
+            <li>
+                <strong>{{ project.title }}</strong> – {{ project.tech }}
+                <a href="{{ url_for('remove_project', title=project.title) }}">[Remove]</a>
+            </li>
+        {% else %}
+            <li>No projects added yet.</li>
+        {% endfor %}
+    </ul>
+
+    <form method="POST" action="/add-project">
+        <input name="title" placeholder="Project title" required>
+        <input name="tech" placeholder="Tech stack" required>
+        <button type="submit">Add Project</button>
+    </form>
+</body>
+</html>
