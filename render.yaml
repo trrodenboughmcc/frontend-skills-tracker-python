@@ -3,7 +3,7 @@ services:
     name: skills-tracker
     runtime: python
     buildCommand: ""
-    startCommand: "python app.py"
+    startCommand: "python tracker_app/app.py"
     envVars:
       - key: FLASK_ENV
         value: production
