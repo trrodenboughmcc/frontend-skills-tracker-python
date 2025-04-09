@@ -1,5 +1,6 @@
 import pytest
 from tracker_app.app import app, tracker
+import html as html_lib
 
 @pytest.fixture
 def client():
@@ -46,7 +47,7 @@ def test_special_characters_in_skills(monkeypatch, client):
     """Skills with special characters should render safely."""
     monkeypatch.setitem(tracker, "skills", ["C++", "Node.js", "React&Redux"])
     response = client.get('/')
-    html = response.data.decode()
+    html = html_lib.unescape(response.data.decode()) 
     assert "C++" in html and "Node.js" in html and "React&Redux" in html
 
 def test_very_long_project_title(monkeypatch, client):
