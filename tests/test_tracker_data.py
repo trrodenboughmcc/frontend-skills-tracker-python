@@ -1,6 +1,6 @@
 # test_tracker_data.py
 
-from app import tracker
+from tracker_app.app import tracker
 
 def test_tracker_has_skills_and_projects():
     assert 'skills' in tracker

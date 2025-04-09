@@ -1,7 +1,7 @@
 # test_app.py
 
 import pytest
-from app import app, tracker
+from tracker_app.app import app, tracker
 
 @pytest.fixture
 def client():
