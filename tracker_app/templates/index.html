@@ -1,42 +1,116 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Skills for Recruiters</title>
+    <meta charset="UTF-8">
+    <title>Skills & Projects Tracker</title>
+
+    <!-- Link to custom stylesheet -->
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+
+    <!-- Optional: Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-yaj28VnSllzZQUkQDh3lH2O8P8F2FnjVuRZvnkl8ZpeXBPIBml+nI15nbL4rZHzcA3AunRG1N2CvGqS7ZuEA1g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
+
 <body>
     <div class="container">
+        <!-- Navigation -->
         <nav>
             <a href="/">Home</a> |
             <a href="/skill-levels">Skill Overview</a>
         </nav>
 
-        <h1>Skill Overview with Project Applications</h1>
+        <h1>Skills & Projects Tracker</h1>
 
+        <!-- Skills Section -->
         <div class="section">
-            <h2>Skills Sorted by Usage in Projects</h2>
-            <ul>
-                {% for skill, count in sorted_skills %}
-                    <li>
-                        <strong>{{ skill }}</strong> — Used in {{ count }} project{{ 's' if count != 1 else '' }}
-                        <br>
-                        Level: {{ skill_levels[skill] }}
-                        <br>
-                        Projects:
-                        <ul>
-                            {% for project in skill_project_map[skill] %}
-                                <li>{{ project }}</li>
-                            {% endfor %}
-                        </ul>
-                    </li>
+            <h2>Skills</h2>
+            <ul class="card-list" id="skills-list">
+                {% for skill in tracker.skills %}
+                  <li class="card skill-filter" data-skill="{{ skill }}">{{ skill }}</li>
+                {% else %}
+                  <li class="card empty">No skills listed.</li>
                 {% endfor %}
             </ul>
         </div>
 
+        <!-- Projects Section -->
         <div class="section">
-            <h2>First Python Project Found</h2>
-            <p>{{ first_python_project }} (found after {{ tries }} tries)</p>
+            <h2>Projects</h2>
+            <p id="active-skill-label"></p>
+            <ul class="card-list" id="project-list">
+                {% for project in tracker.projects %}
+                  <li class="card project" data-tech="{{ project.tech }}">
+                    <div class="project-content">
+                      <div class="project-info">
+                        <strong>{{ project.title }}</strong><br>
+                        <span class="tech">{{ project.tech }}</span>
+                      </div>
+                    </div>
+                    {% if project.link %}
+                        <div><a href="{{ project.link }}" target="_blank" class="project-link">View</a></div>
+                    {% else %}
+                        <span class="project-link-placeholder"></span>
+                    {% endif %}
+                  </li>
+                {% else %}
+                  <li class="card empty">No projects listed.</li>
+                {% endfor %}
+            </ul>
+            <button id="clear-filter" style="display:none;">Clear Filter</button>
         </div>
     </div>
+
+    <!-- JavaScript: Skill Filter Logic -->
+    <script>
+        const skills = document.querySelectorAll(".skill-filter");
+        const projects = document.querySelectorAll(".project");
+        const clearBtn = document.getElementById("clear-filter");
+        const activeLabel = document.getElementById("active-skill-label");
+
+        let selectedSkills = new Set();
+
+        skills.forEach(skillEl => {
+            skillEl.addEventListener("click", () => {
+                const skill = skillEl.dataset.skill;
+
+                if (selectedSkills.has(skill)) {
+                    selectedSkills.delete(skill);
+                    skillEl.classList.remove("active-skill");
+                } else {
+                    selectedSkills.add(skill);
+                    skillEl.classList.add("active-skill");
+                }
+
+                updateFilteredProjects();
+            });
+        });
+
+        clearBtn.addEventListener("click", () => {
+            selectedSkills.clear();
+            skills.forEach(s => s.classList.remove("active-skill"));
+            updateFilteredProjects();
+        });
+
+        function updateFilteredProjects() {
+            if (selectedSkills.size === 0) {
+                projects.forEach(p => p.style.display = "flex");
+                activeLabel.textContent = "";
+                activeLabel.style.display = "none";
+                clearBtn.style.display = "none";
+            } else {
+                const skillsArray = Array.from(selectedSkills).map(s => s.toLowerCase());
+
+                projects.forEach(proj => {
+                    const tech = proj.dataset.tech.toLowerCase();
+                    const matches = skillsArray.every(skill => tech.includes(skill));
+                    proj.style.display = matches ? "flex" : "none";
+                });
+
+                activeLabel.textContent = `Filtering by skills: ${Array.from(selectedSkills).join(", ")}`;
+                activeLabel.style.display = "block";
+                clearBtn.style.display = "inline-block";
+            }
+        }
+    </script>
 </body>
 </html>
