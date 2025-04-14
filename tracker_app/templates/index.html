@@ -98,17 +98,28 @@
         skills.forEach(skillEl => {
             skillEl.addEventListener("click", () => {
                 const skill = skillEl.dataset.skill;
-
-                // Toggle selected state for each skill
+                const link = skillEl.querySelector(".skill-link");
+        
                 if (selectedSkills.has(skill)) {
+                    // Remove active state
                     selectedSkills.delete(skill);
                     skillEl.classList.remove("active-skill");
+        
+                    // Remove white styling from link
+                    if (link) {
+                        link.style.color = "";
+                    }
                 } else {
+                    // Add active state
                     selectedSkills.add(skill);
                     skillEl.classList.add("active-skill");
+        
+                    // Apply white styling to link
+                    if (link) {
+                        link.style.color = "white";
+                    }
                 }
-
-                // Recalculate and update visible projects
+        
                 updateFilteredProjects();
             });
         });
