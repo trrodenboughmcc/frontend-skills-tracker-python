@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Skill Levels</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Skill Level Demo</h1>
+
+        <div class="section">
+            <h2>Generated Skill Levels</h2>
+            <ul>
+                {% for skill, level in skill_levels.items() %}
+                    <li>{{ skill }}: {{ level }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>Skills Matched in Projects</h2>
+            <ul>
+                {% for title, skill in matches %}
+                    <li>{{ skill }} appears in project: {{ title }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>First Python Project Found</h2>
+            <p>{{ first_python_project }} (found after {{ tries }} tries)</p>
+        </div>
+
+        <div class="section">
+            <h2>Filtered Project List (No Blank Titles)</h2>
+            <ul>
+                {% for project in filtered_projects %}
+                    <li><strong>{{ project.title }}</strong> – {{ project.tech }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <a href="/">Back to Main</a>
+    </div>
+</body>
+</html>
