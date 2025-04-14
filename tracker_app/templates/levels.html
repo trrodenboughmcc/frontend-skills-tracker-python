@@ -2,8 +2,13 @@
 <html>
 <head>
     <title>Skills Overview</title>
+
+    <!-- Link to main stylesheet -->
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+
+    <!-- Inline styles specific to the table layout and animations -->
     <style>
+        /* Basic table setup */
         table {
             width: 100%;
             border-collapse: collapse;
@@ -16,6 +21,7 @@
             text-align: left;
         }
 
+        /* Style for sortable column headers */
         th {
             background-color: #f0f0f0;
             cursor: pointer;
@@ -28,6 +34,7 @@
             color: #888;
         }
 
+        /* Fade animation for filtering */
         tr {
             transition: opacity 0.3s ease, transform 0.3s ease;
         }
@@ -43,11 +50,13 @@
             transform: translateX(0);
         }
 
+        /* Small nested list for projects */
         .small-list {
             margin: 0;
             padding-left: 20px;
         }
 
+        /* Styling for the skill search input */
         #skill-search {
             padding: 8px;
             width: 100%;
@@ -60,18 +69,24 @@
         }
     </style>
 </head>
+
 <body>
     <div class="container">
+
+        <!-- Include reusable navigation bar -->
         {% include '_nav.html' %}
 
         <h1>Interactive Skill Overview</h1>
 
+        <!-- Search bar for filtering by skill name -->
         <p>Click on column headers to sort. Use the box below to search by skill name.</p>
         <input type="text" id="skill-search" placeholder="Search skills...">
 
+        <!-- Skills summary table -->
         <table id="skills-table">
             <thead>
                 <tr>
+                    <!-- Sortable headers -->
                     <th onclick="sortTable(0)">Skill <span class="sort-icon">⇅</span></th>
                     <th onclick="sortTable(1)">Used In Projects <span class="sort-icon">⇅</span></th>
                     <th onclick="sortTable(2)">Years of Experience <span class="sort-icon">⇅</span></th>
@@ -79,12 +94,14 @@
                 </tr>
             </thead>
             <tbody>
+                <!-- Loop through each skill -->
                 {% for skill, count in sorted_skills %}
                 <tr class="{% if highlighted_rows[skill] %}highlighted{% endif %}">
                     <td class="skill-name">{{ skill }}</td>
                     <td>{{ count }}</td>
                     <td>{{ years_of_experience[skill] }} years</td>
                     <td>
+                        <!-- List projects that use this skill -->
                         <ul class="small-list">
                         {% for project in skill_project_map[skill] %}
                             <li>{{ project }}</li>
@@ -96,15 +113,19 @@
             </tbody>
         </table>
 
+        <!-- Summary of the first match for the "Python" skill -->
         <div class="section">
             <h2>First Python Project Found</h2>
             <p>{{ first_python_project }} (found after {{ tries }} tries)</p>
         </div>
     </div>
 
+    <!-- ====================== JavaScript Behavior ====================== -->
     <script>
-    let sortDirections = [1, 1, 1]; // Default sort direction for each column
+    // Initial sort direction: 1 = ascending, -1 = descending
+    let sortDirections = [1, 1, 1];
 
+    // Function to sort the table based on a clicked column index
     function sortTable(colIndex) {
         const table = document.getElementById("skills-table");
         const tbody = table.tBodies[0];
@@ -112,6 +133,7 @@
         const isNumeric = colIndex === 1 || colIndex === 2;
         const dir = sortDirections[colIndex];
 
+        // Sort rows based on column content
         const sorted = rows.sort((a, b) => {
             const valA = a.cells[colIndex].innerText.trim().replace(" years", "");
             const valB = b.cells[colIndex].innerText.trim().replace(" years", "");
@@ -123,18 +145,23 @@
             }
         });
 
-        sortDirections[colIndex] *= -1; // Toggle direction
+        // Reverse direction for next click
+        sortDirections[colIndex] *= -1;
+
+        // Re-render sorted rows
         tbody.innerHTML = "";
         sorted.forEach(row => tbody.appendChild(row));
     }
 
+    // When the page loads, scroll to the highlighted skill (if any)
     window.addEventListener("DOMContentLoaded", () => {
-      const row = document.querySelector("tr.highlighted");
-      if (row) {
-        row.scrollIntoView({ behavior: "smooth", block: "center" });
-      }
+        const row = document.querySelector("tr.highlighted");
+        if (row) {
+            row.scrollIntoView({ behavior: "smooth", block: "center" });
+        }
     });
 
+    // Live filtering as the user types in the search box
     document.getElementById("skill-search").addEventListener("input", function () {
         const searchValue = this.value.toLowerCase();
         const rows = document.querySelectorAll("#skills-table tbody tr");
@@ -146,7 +173,7 @@
             if (searchValue === "" || isMatch) {
                 row.style.display = "";
                 row.classList.remove("fade-out");
-                void row.offsetWidth; // Trigger reflow for animation
+                void row.offsetWidth; // Forces reflow for animation to re-trigger
                 row.classList.add("fade-in");
             } else {
                 row.classList.remove("fade-in");
