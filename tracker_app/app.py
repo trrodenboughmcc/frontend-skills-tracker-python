@@ -70,8 +70,21 @@ def skill_levels():
     # First project using 'Python' (while + break)
     first_python_project, tries = find_first_project_with("Python")
 
-    return render_template('levels.html', skill_levels=skill_levels, matches=matches,
-                           first_python_project=first_python_project, tries=tries)
+    # Filter out blank project titles using continue
+    filtered_projects = []
+    for p in tracker["projects"]:
+        if not p["title"].strip():
+            continue
+        filtered_projects.append(p)
+
+    return render_template(
+        'levels.html',
+        skill_levels=skill_levels,
+        matches=matches,
+        first_python_project=first_python_project,
+        tries=tries,
+        filtered_projects=filtered_projects
+    )
 
 def find_first_project_with(skill_name):
     index = 0
