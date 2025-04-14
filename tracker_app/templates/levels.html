@@ -106,35 +106,41 @@
     </div>
 
     <script>
-    function sortTable(colIndex) {
-        const table = document.getElementById("skills-table");
-        const tbody = table.tBodies[0];
-        const rows = Array.from(tbody.rows);
-        const isNumeric = colIndex === 1;
+function sortTable(colIndex) {
+    const table = document.getElementById("skills-table");
+    const tbody = table.tBodies[0];
+    const rows = Array.from(tbody.rows);
+    const isNumeric = colIndex === 1;
 
-        const sorted = rows.sort((a, b) => {
-            const valA = a.cells[colIndex].innerText.trim();
-            const valB = b.cells[colIndex].innerText.trim();
+    const sorted = rows.sort((a, b) => {
+        const valA = a.cells[colIndex].innerText.trim();
+        const valB = b.cells[colIndex].innerText.trim();
 
-            if (isNumeric) {
-                return parseInt(valB) - parseInt(valA);
-            } else {
-                return valA.localeCompare(valB);
-            }
-        });
+        if (isNumeric) {
+            return parseInt(valB) - parseInt(valA); // Descending numeric
+        } else {
+            return valA.localeCompare(valB); // Alphabetical
+        }
+    });
 
-        tbody.innerHTML = "";
-        sorted.forEach(row => tbody.appendChild(row));
-    }
+    tbody.innerHTML = "";
+    sorted.forEach(row => tbody.appendChild(row));
+}
 
-    document.getElementById("skill-search").addEventListener("input", function () {
-        const searchValue = this.value.toLowerCase();
-        const rows = document.querySelectorAll("#skills-table tbody tr");
+document.getElementById("skill-search").addEventListener("input", function () {
+    const searchValue = this.value.toLowerCase();
+    const rows = document.querySelectorAll("#skills-table tbody tr");
 
-        rows.forEach(row => {
-            const skillName = row.querySelector(".skill-name").textContent.toLowerCase();
+    rows.forEach(row => {
+        const skillName = row.querySelector(".skill-name").textContent.toLowerCase();
+
+        if (searchValue === "") {
+            // If the search box is cleared, show all rows
+            row.style.display = "";
+            row.classList.remove("fade-out");
+            row.classList.add("fade-in");
+        } else {
             const isMatch = skillName.includes(searchValue);
-
             if (isMatch) {
                 row.classList.remove("fade-out");
                 row.classList.add("fade-in");
@@ -144,10 +150,11 @@
                 row.classList.add("fade-out");
                 setTimeout(() => {
                     row.style.display = "none";
-                }, 300); // Match the transition time
+                }, 300);
             }
-        });
+        }
     });
-    </script>
+});
+</script>
 </body>
 </html>
