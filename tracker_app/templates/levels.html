@@ -128,6 +128,13 @@
         sorted.forEach(row => tbody.appendChild(row));
     }
 
+    window.addEventListener("DOMContentLoaded", () => {
+      const row = document.querySelector("tr.highlighted");
+      if (row) {
+        row.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
+    });
+
     document.getElementById("skill-search").addEventListener("input", function () {
         const searchValue = this.value.toLowerCase();
         const rows = document.querySelectorAll("#skills-table tbody tr");
