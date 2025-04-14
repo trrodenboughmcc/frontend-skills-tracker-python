@@ -4,28 +4,32 @@
     <meta charset="UTF-8">
     <title>Skills & Projects Tracker</title>
 
-    <!-- Link to custom stylesheet -->
+    <!-- Link to your app's stylesheet (served from /static/styles.css) -->
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 
-    <!-- Optional: Font Awesome for icons -->
+    <!-- Optional: Font Awesome for icons (used in navigation or future features) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-yaj28VnSllzZQUkQDh3lH2O8P8F2FnjVuRZvnkl8ZpeXBPIBml+nI15nbL4rZHzcA3AunRG1N2CvGqS7ZuEA1g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 
 <body>
     <div class="container">
-        <!-- Navigation -->
+        <!-- Reusable navigation bar pulled in as a partial (_nav.html) -->
         {% include '_nav.html' %}
 
         <h1>Projects Tracker</h1>
 
-        <!-- Skills Section -->
+        <!-- ====================== SKILLS SECTION ====================== -->
         <div class="section">
             <h2>Skills</h2>
+
+            <!-- Dynamically generated list of skill cards -->
             <ul class="card-list" id="skills-list">
                 {% for skill in tracker.skills %}
                   <li class="card skill-filter" data-skill="{{ skill.name }}">
+                    <!-- Skill name -->
                     {{ skill.name }}
                     <br>
+                    <!-- Optional small link to jump to the summary page with skill preloaded -->
                     <a
                       href="{{ url_for('skill_levels') }}?skill={{ skill.name }}"
                       title="View {{ skill.name }} in skill summary"
@@ -35,24 +39,33 @@
                     </a>
                   </li>
                 {% else %}
+                  <!-- Fallback message if no skills are defined -->
                   <li class="card empty">No skills listed.</li>
                 {% endfor %}
             </ul>
         </div>
 
-        <!-- Projects Section -->
+        <!-- ====================== PROJECTS SECTION ====================== -->
         <div class="section">
             <h2>Projects</h2>
+
+            <!-- Displays active filter summary -->
             <p id="active-skill-label"></p>
+
+            <!-- Dynamically generated list of projects -->
             <ul class="card-list" id="project-list">
                 {% for project in tracker.projects %}
                   <li class="card project" data-tech="{{ project.tech }}">
                     <div class="project-content">
                       <div class="project-info">
+                        <!-- Project title -->
                         <strong>{{ project.title }}</strong><br>
+                        <!-- Technology stack used -->
                         <span class="tech">{{ project.tech }}</span>
                       </div>
                     </div>
+
+                    <!-- If project has a valid link, show it -->
                     {% if project.link %}
                         <div><a href="{{ project.link }}" target="_blank" class="project-link">View</a></div>
                     {% else %}
@@ -60,26 +73,33 @@
                     {% endif %}
                   </li>
                 {% else %}
+                  <!-- Fallback message if no projects exist -->
                   <li class="card empty">No projects listed.</li>
                 {% endfor %}
             </ul>
+
+            <!-- Button to clear all active skill filters -->
             <button id="clear-filter" style="display:none;">Clear Filter</button>
         </div>
     </div>
 
-    <!-- JavaScript: Skill Filter Logic -->
+    <!-- ====================== JAVASCRIPT FILTER LOGIC ====================== -->
     <script>
+        // Select DOM elements
         const skills = document.querySelectorAll(".skill-filter");
         const projects = document.querySelectorAll(".project");
         const clearBtn = document.getElementById("clear-filter");
         const activeLabel = document.getElementById("active-skill-label");
 
+        // Store selected skills in a Set (for uniqueness and fast lookup)
         let selectedSkills = new Set();
 
+        // Attach click event to each skill card
         skills.forEach(skillEl => {
             skillEl.addEventListener("click", () => {
                 const skill = skillEl.dataset.skill;
 
+                // Toggle selected state for each skill
                 if (selectedSkills.has(skill)) {
                     selectedSkills.delete(skill);
                     skillEl.classList.remove("active-skill");
@@ -88,31 +108,38 @@
                     skillEl.classList.add("active-skill");
                 }
 
+                // Recalculate and update visible projects
                 updateFilteredProjects();
             });
         });
 
+        // Clear all filters when the button is clicked
         clearBtn.addEventListener("click", () => {
             selectedSkills.clear();
             skills.forEach(s => s.classList.remove("active-skill"));
             updateFilteredProjects();
         });
 
+        // Update which projects are shown based on active skill filters
         function updateFilteredProjects() {
             if (selectedSkills.size === 0) {
+                // If nothing is selected, show all projects
                 projects.forEach(p => p.style.display = "flex");
                 activeLabel.textContent = "";
                 activeLabel.style.display = "none";
                 clearBtn.style.display = "none";
             } else {
+                // Get selected skill names in lowercase for matching
                 const skillsArray = Array.from(selectedSkills).map(s => s.toLowerCase());
 
+                // Show or hide projects based on whether all selected skills are included
                 projects.forEach(proj => {
                     const tech = proj.dataset.tech.toLowerCase();
                     const matches = skillsArray.every(skill => tech.includes(skill));
                     proj.style.display = matches ? "flex" : "none";
                 });
 
+                // Update label and button visibility
                 activeLabel.textContent = `Filtering by skills: ${Array.from(selectedSkills).join(", ")}`;
                 activeLabel.style.display = "block";
                 clearBtn.style.display = "inline-block";
