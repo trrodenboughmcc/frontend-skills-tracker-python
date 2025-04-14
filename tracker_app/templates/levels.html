@@ -86,7 +86,7 @@
                 <tr>
                     <td class="skill-name">{{ skill }}</td>
                     <td>{{ count }}</td>
-                    <td>{{ years_of_experience[skill] }}</td>
+                    <td>{{ years_of_experience[skill] }} years</td>
                     <td>
                         <ul class="small-list">
                         {% for project in skill_project_map[skill] %}
@@ -98,54 +98,61 @@
                 {% endfor %}
             </tbody>
         </table>
+
+        <div class="section">
+            <h2>First Python Project Found</h2>
+            <p>{{ first_python_project }} (found after {{ tries }} tries)</p>
+        </div>
     </div>
 
     <script>
-function sortTable(colIndex) {
-    const table = document.getElementById("skills-table");
-    const tbody = table.tBodies[0];
-    const rows = Array.from(tbody.rows);
-    const isNumeric = colIndex === 1;
+    let sortDirections = [1, 1, 1]; // Default sort direction for each column
 
-    const sorted = rows.sort((a, b) => {
-        const valA = a.cells[colIndex].innerText.trim();
-        const valB = b.cells[colIndex].innerText.trim();
+    function sortTable(colIndex) {
+        const table = document.getElementById("skills-table");
+        const tbody = table.tBodies[0];
+        const rows = Array.from(tbody.rows);
+        const isNumeric = colIndex === 1 || colIndex === 2;
+        const dir = sortDirections[colIndex];
 
-        if (isNumeric) {
-            return parseInt(valB) - parseInt(valA);
-        } else {
-            return valA.localeCompare(valB);
-        }
+        const sorted = rows.sort((a, b) => {
+            const valA = a.cells[colIndex].innerText.trim().replace(" years", "");
+            const valB = b.cells[colIndex].innerText.trim().replace(" years", "");
+
+            if (isNumeric) {
+                return dir * (parseInt(valA) - parseInt(valB));
+            } else {
+                return dir * valA.localeCompare(valB);
+            }
+        });
+
+        sortDirections[colIndex] *= -1; // Toggle direction
+        tbody.innerHTML = "";
+        sorted.forEach(row => tbody.appendChild(row));
+    }
+
+    document.getElementById("skill-search").addEventListener("input", function () {
+        const searchValue = this.value.toLowerCase();
+        const rows = document.querySelectorAll("#skills-table tbody tr");
+
+        rows.forEach(row => {
+            const skillName = row.querySelector(".skill-name").textContent.toLowerCase();
+            const isMatch = skillName.includes(searchValue);
+
+            if (searchValue === "" || isMatch) {
+                row.style.display = "";
+                row.classList.remove("fade-out");
+                void row.offsetWidth; // Trigger reflow for animation
+                row.classList.add("fade-in");
+            } else {
+                row.classList.remove("fade-in");
+                row.classList.add("fade-out");
+                setTimeout(() => {
+                    row.style.display = "none";
+                }, 300);
+            }
+        });
     });
-
-    tbody.innerHTML = "";
-    sorted.forEach(row => tbody.appendChild(row));
-}
-
-document.getElementById("skill-search").addEventListener("input", function () {
-    const searchValue = this.value.toLowerCase();
-    const rows = document.querySelectorAll("#skills-table tbody tr");
-
-    rows.forEach(row => {
-        const skillName = row.querySelector(".skill-name").textContent.toLowerCase();
-        const isMatch = skillName.includes(searchValue);
-
-        if (searchValue === "" || isMatch) {
-            // Make row visible first
-            row.style.display = "";
-            row.classList.remove("fade-out");
-            // Trigger reflow to allow animation reset
-            void row.offsetWidth;
-            row.classList.add("fade-in");
-        } else {
-            row.classList.remove("fade-in");
-            row.classList.add("fade-out");
-            setTimeout(() => {
-                row.style.display = "none";
-            }, 300);
-        }
-    });
-});
-</script>
+    </script>
 </body>
 </html>
