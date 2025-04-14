@@ -28,8 +28,19 @@
             color: #888;
         }
 
-        tr:hover {
-            background-color: #f9f9f9;
+        tr {
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        tr.fade-out {
+            opacity: 0;
+            transform: translateX(20px);
+            pointer-events: none;
+        }
+
+        tr.fade-in {
+            opacity: 1;
+            transform: translateX(0);
         }
 
         .small-list {
@@ -106,9 +117,9 @@
             const valB = b.cells[colIndex].innerText.trim();
 
             if (isNumeric) {
-                return parseInt(valB) - parseInt(valA); // Descending numeric
+                return parseInt(valB) - parseInt(valA);
             } else {
-                return valA.localeCompare(valB); // Alphabetical
+                return valA.localeCompare(valB);
             }
         });
 
@@ -122,7 +133,19 @@
 
         rows.forEach(row => {
             const skillName = row.querySelector(".skill-name").textContent.toLowerCase();
-            row.style.display = skillName.includes(searchValue) ? "" : "none";
+            const isMatch = skillName.includes(searchValue);
+
+            if (isMatch) {
+                row.classList.remove("fade-out");
+                row.classList.add("fade-in");
+                row.style.display = "";
+            } else {
+                row.classList.remove("fade-in");
+                row.classList.add("fade-out");
+                setTimeout(() => {
+                    row.style.display = "none";
+                }, 300); // Match the transition time
+            }
         });
     });
     </script>
