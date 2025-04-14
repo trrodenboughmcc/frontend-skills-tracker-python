@@ -71,7 +71,7 @@
 
         <table id="skills-table">
             <thead>
-                <tr class="{% if highlighted_rows[skill] %}highlighted{% endif %}">
+                <tr>
                     <th onclick="sortTable(0)">Skill <span class="sort-icon">⇅</span></th>
                     <th onclick="sortTable(1)">Used In Projects <span class="sort-icon">⇅</span></th>
                     <th onclick="sortTable(2)">Years of Experience <span class="sort-icon">⇅</span></th>
@@ -80,7 +80,7 @@
             </thead>
             <tbody>
                 {% for skill, count in sorted_skills %}
-                <tr>
+                <tr class="{% if highlighted_rows[skill] %}highlighted{% endif %}">
                     <td class="skill-name">{{ skill }}</td>
                     <td>{{ count }}</td>
                     <td>{{ years_of_experience[skill] }} years</td>
