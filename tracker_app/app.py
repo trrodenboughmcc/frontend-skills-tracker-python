@@ -1,21 +1,9 @@
-# Import Flask framework and render_template to display HTML templates
 from flask import Flask, render_template
-
-# Used to access environment variables like PORT for deployment on platforms like Render
 import os
 
-# Create an instance of the Flask app
 app = Flask(__name__)
 
-# -----------------------------
-# Hardcoded Data for the App
-# -----------------------------
-
-# The 'tracker' dictionary contains two main parts:
-# 1. A list of skills
-# 2. A list of projects, each with title, technologies used, and a link
 tracker = {
-    # List of skills you might know or want to showcase
     "skills": [
         "Python",
         "Flask",
@@ -26,13 +14,11 @@ tracker = {
         "Git",
         "API"
     ],
-
-    # List of projects — this is where you can add/edit your own work
     "projects": [
         {
-            "title": "Portfolio Website",  # Name of the project
-            "tech": "HTML, CSS, JavaScript",  # Comma-separated tech stack
-            "link": "https://yourportfolio.com"  # Link to live site or repo
+            "title": "Portfolio Website",
+            "tech": "HTML, CSS, JavaScript",
+            "link": "https://yourportfolio.com"
         },
         {
             "title": "Todo App",
@@ -62,24 +48,41 @@ tracker = {
     ]
 }
 
-# -----------------------------
-# Flask Route to Render the Page
-# -----------------------------
-
 @app.route('/')
 def home():
-    # Pass the 'tracker' dictionary into the HTML template
     return render_template('index.html', tracker=tracker)
 
-# -----------------------------
-# Run the Flask App
-# -----------------------------
-if __name__ == '__main__':
-    # Uncomment you're running the app locally, comment when you're deploying to Render
-    # app.run(debug=True)
+@app.route('/skill-levels')
+def skill_levels():
+    # Generate levels using range()
+    skill_levels = {}
+    for i in range(len(tracker["skills"])):
+        skill = tracker["skills"][i]
+        skill_levels[skill] = f"Level {i + 1}"
 
-    # Uncomment when you're deploying to Render, comment when you're running locally
-    # Render provides the PORT environment variable
+    # Match skills to projects (nested loop)
+    matches = []
+    for project in tracker["projects"]:
+        for skill in tracker["skills"]:
+            if skill.lower() in project["tech"].lower():
+                matches.append((project["title"], skill))
+
+    # First project using 'Python' (while + break)
+    first_python_project, tries = find_first_project_with("Python")
+
+    return render_template('levels.html', skill_levels=skill_levels, matches=matches,
+                           first_python_project=first_python_project, tries=tries)
+
+def find_first_project_with(skill_name):
+    index = 0
+    attempts = 0
+    while index < len(tracker["projects"]):
+        attempts += 1
+        if skill_name.lower() in tracker["projects"][index]["tech"].lower():
+            return tracker["projects"][index]["title"], attempts
+        index += 1
+    return "Not found", attempts
+
+if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
-    # '0.0.0.0' means the app is available publicly (required for Render)
     app.run(host='0.0.0.0', port=port)
