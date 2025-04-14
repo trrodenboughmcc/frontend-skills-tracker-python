@@ -1,50 +1,101 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Skill Levels</title>
+    <title>Skills Overview</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f0f0f0;
+            cursor: pointer;
+        }
+
+        tr:hover {
+            background-color: #f9f9f9;
+        }
+
+        .small-list {
+            margin: 0;
+            padding-left: 20px;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
-        <!-- Navigation -->
         <nav>
             <a href="/">Home</a> |
-            <a href="/skill-levels">Skill Level Demo</a>
+            <a href="/skill-levels">Skill Overview</a>
         </nav>
 
-        <h1>Skill Level Demo</h1>
+        <h1>Interactive Skill Overview</h1>
 
-        <div class="section">
-            <h2>Generated Skill Levels</h2>
-            <ul>
-                {% for skill, level in skill_levels.items() %}
-                    <li>{{ skill }}: {{ level }}</li>
-                {% endfor %}
-            </ul>
-        </div>
+        <p>Click on column headers to sort by skill name, usage count, or level.</p>
 
-        <div class="section">
-            <h2>Skills Matched in Projects</h2>
-            <ul>
-                {% for title, skill in matches %}
-                    <li>{{ skill }} appears in project: {{ title }}</li>
+        <table id="skills-table">
+            <thead>
+                <tr>
+                    <th onclick="sortTable(0)">Skill</th>
+                    <th onclick="sortTable(1)">Used In Projects</th>
+                    <th onclick="sortTable(2)">Level</th>
+                    <th>Projects</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for skill, count in sorted_skills %}
+                <tr>
+                    <td>{{ skill }}</td>
+                    <td>{{ count }}</td>
+                    <td>{{ skill_levels[skill] }}</td>
+                    <td>
+                        <ul class="small-list">
+                        {% for project in skill_project_map[skill] %}
+                            <li>{{ project }}</li>
+                        {% endfor %}
+                        </ul>
+                    </td>
+                </tr>
                 {% endfor %}
-            </ul>
-        </div>
+            </tbody>
+        </table>
 
         <div class="section">
             <h2>First Python Project Found</h2>
             <p>{{ first_python_project }} (found after {{ tries }} tries)</p>
         </div>
-
-        <div class="section">
-            <h2>Filtered Project List (No Blank Titles)</h2>
-            <ul>
-                {% for project in filtered_projects %}
-                    <li><strong>{{ project.title }}</strong> – {{ project.tech }}</li>
-                {% endfor %}
-            </ul>
-        </div>
     </div>
+
+    <script>
+    function sortTable(colIndex) {
+        const table = document.getElementById("skills-table");
+        const tbody = table.tBodies[0];
+        const rows = Array.from(tbody.rows);
+        const isNumeric = colIndex === 1;
+
+        const sorted = rows.sort((a, b) => {
+            const valA = a.cells[colIndex].innerText.trim();
+            const valB = b.cells[colIndex].innerText.trim();
+
+            if (isNumeric) {
+                return parseInt(valB) - parseInt(valA); // Descending numeric
+            } else {
+                return valA.localeCompare(valB); // Alphabetical text
+            }
+        });
+
+        tbody.innerHTML = "";
+        sorted.forEach(row => tbody.appendChild(row));
+    }
+    </script>
 </body>
 </html>
