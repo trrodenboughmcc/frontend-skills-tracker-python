@@ -19,6 +19,13 @@
         th {
             background-color: #f0f0f0;
             cursor: pointer;
+            position: relative;
+        }
+
+        th .sort-icon {
+            font-size: 12px;
+            margin-left: 5px;
+            color: #888;
         }
 
         tr:hover {
@@ -28,6 +35,17 @@
         .small-list {
             margin: 0;
             padding-left: 20px;
+        }
+
+        #skill-search {
+            padding: 8px;
+            width: 100%;
+            max-width: 300px;
+            margin-top: 10px;
+            margin-bottom: 20px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
         }
     </style>
 </head>
@@ -40,21 +58,22 @@
 
         <h1>Interactive Skill Overview</h1>
 
-        <p>Click on column headers to sort by skill name, usage count, or level.</p>
+        <p>Click on column headers to sort. Use the box below to search by skill name.</p>
+        <input type="text" id="skill-search" placeholder="Search skills...">
 
         <table id="skills-table">
             <thead>
                 <tr>
-                    <th onclick="sortTable(0)">Skill</th>
-                    <th onclick="sortTable(1)">Used In Projects</th>
-                    <th onclick="sortTable(2)">Level</th>
+                    <th onclick="sortTable(0)">Skill <span class="sort-icon">⇅</span></th>
+                    <th onclick="sortTable(1)">Used In Projects <span class="sort-icon">⇅</span></th>
+                    <th onclick="sortTable(2)">Level <span class="sort-icon">⇅</span></th>
                     <th>Projects</th>
                 </tr>
             </thead>
             <tbody>
                 {% for skill, count in sorted_skills %}
                 <tr>
-                    <td>{{ skill }}</td>
+                    <td class="skill-name">{{ skill }}</td>
                     <td>{{ count }}</td>
                     <td>{{ skill_levels[skill] }}</td>
                     <td>
@@ -89,13 +108,23 @@
             if (isNumeric) {
                 return parseInt(valB) - parseInt(valA); // Descending numeric
             } else {
-                return valA.localeCompare(valB); // Alphabetical text
+                return valA.localeCompare(valB); // Alphabetical
             }
         });
 
         tbody.innerHTML = "";
         sorted.forEach(row => tbody.appendChild(row));
     }
+
+    document.getElementById("skill-search").addEventListener("input", function () {
+        const searchValue = this.value.toLowerCase();
+        const rows = document.querySelectorAll("#skills-table tbody tr");
+
+        rows.forEach(row => {
+            const skillName = row.querySelector(".skill-name").textContent.toLowerCase();
+            row.style.display = skillName.includes(searchValue) ? "" : "none";
+        });
+    });
     </script>
 </body>
 </html>
