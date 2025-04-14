@@ -23,9 +23,17 @@
             <h2>Skills</h2>
             <ul class="card-list" id="skills-list">
                 {% for skill in tracker.skills %}
-                    <li class="card skill-filter" data-skill="{{ skill.name }}">
-                        {{ skill.name }}
-                    </li>
+                  <li class="card skill-filter" data-skill="{{ skill.name }}">
+                    {{ skill.name }} ({{ skill.experience }} yrs)
+                    <br>
+                    <a
+                      href="{{ url_for('skill_levels') }}?skill={{ skill.name }}"
+                      title="View {{ skill.name }} in skill summary"
+                      class="skill-link"
+                    >
+                      summary ↗
+                    </a>
+                  </li>
                 {% else %}
                   <li class="card empty">No skills listed.</li>
                 {% endfor %}
