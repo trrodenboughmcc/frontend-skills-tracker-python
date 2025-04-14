@@ -85,36 +85,32 @@
 
     <!-- ====================== JAVASCRIPT FILTER LOGIC ====================== -->
     <script>
-        // Select DOM elements
         const skills = document.querySelectorAll(".skill-filter");
         const projects = document.querySelectorAll(".project");
         const clearBtn = document.getElementById("clear-filter");
         const activeLabel = document.getElementById("active-skill-label");
-
-        // Store selected skills in a Set (for uniqueness and fast lookup)
+        
         let selectedSkills = new Set();
-
-        // Attach click event to each skill card
+        
         skills.forEach(skillEl => {
             skillEl.addEventListener("click", () => {
                 const skill = skillEl.dataset.skill;
                 const link = skillEl.querySelector(".skill-link");
         
+                // Toggle selection state
                 if (selectedSkills.has(skill)) {
-                    // Remove active state
                     selectedSkills.delete(skill);
                     skillEl.classList.remove("active-skill");
         
-                    // Remove white styling from link
+                    // Reset link color to default (inherits from parent)
                     if (link) {
                         link.style.color = "";
                     }
                 } else {
-                    // Add active state
                     selectedSkills.add(skill);
                     skillEl.classList.add("active-skill");
         
-                    // Apply white styling to link
+                    // Make the link white when selected
                     if (link) {
                         link.style.color = "white";
                     }
@@ -123,34 +119,36 @@
                 updateFilteredProjects();
             });
         });
-
-        // Clear all filters when the button is clicked
+        
         clearBtn.addEventListener("click", () => {
             selectedSkills.clear();
-            skills.forEach(s => s.classList.remove("active-skill"));
+            skills.forEach(skillEl => {
+                skillEl.classList.remove("active-skill");
+        
+                // Reset link color for all skills
+                const link = skillEl.querySelector(".skill-link");
+                if (link) {
+                    link.style.color = "";
+                }
+            });
             updateFilteredProjects();
         });
-
-        // Update which projects are shown based on active skill filters
+        
         function updateFilteredProjects() {
             if (selectedSkills.size === 0) {
-                // If nothing is selected, show all projects
                 projects.forEach(p => p.style.display = "flex");
                 activeLabel.textContent = "";
                 activeLabel.style.display = "none";
                 clearBtn.style.display = "none";
             } else {
-                // Get selected skill names in lowercase for matching
                 const skillsArray = Array.from(selectedSkills).map(s => s.toLowerCase());
-
-                // Show or hide projects based on whether all selected skills are included
+        
                 projects.forEach(proj => {
                     const tech = proj.dataset.tech.toLowerCase();
                     const matches = skillsArray.every(skill => tech.includes(skill));
                     proj.style.display = matches ? "flex" : "none";
                 });
-
-                // Update label and button visibility
+        
                 activeLabel.textContent = `Filtering by skills: ${Array.from(selectedSkills).join(", ")}`;
                 activeLabel.style.display = "block";
                 clearBtn.style.display = "inline-block";
