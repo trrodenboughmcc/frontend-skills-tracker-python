@@ -24,7 +24,7 @@
             <ul class="card-list" id="skills-list">
                 {% for skill in tracker.skills %}
                   <li class="card skill-filter" data-skill="{{ skill.name }}">
-                    {{ skill.name }} ({{ skill.experience }} yrs)
+                    {{ skill.name }}
                     <br>
                     <a
                       href="{{ url_for('skill_levels') }}?skill={{ skill.name }}"
