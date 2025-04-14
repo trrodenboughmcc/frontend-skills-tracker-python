@@ -71,7 +71,7 @@
 
         <table id="skills-table">
             <thead>
-                <tr>
+                <tr class="{% if highlighted_rows[skill] %}highlighted{% endif %}">
                     <th onclick="sortTable(0)">Skill <span class="sort-icon">⇅</span></th>
                     <th onclick="sortTable(1)">Used In Projects <span class="sort-icon">⇅</span></th>
                     <th onclick="sortTable(2)">Years of Experience <span class="sort-icon">⇅</span></th>
