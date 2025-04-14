@@ -48,23 +48,27 @@ tracker = {
     ]
 }
 
-@app.route('/')
-def home():
-    return render_template('index.html', tracker=tracker)
-
 @app.route('/skill-levels')
 def skill_levels():
-    skill_levels = {}
+    # Map realistic years of experience to each skill
+    years_of_experience = {
+        "Python": 3,
+        "Flask": 2,
+        "SQL": 2,
+        "HTML": 4,
+        "CSS": 4,
+        "JavaScript": 3,
+        "Git": 5,
+        "API": 2
+    }
+
     usage_count = {}
     matches = []
+    skill_project_map = {skill: [] for skill in tracker["skills"]}
 
-    for i in range(len(tracker["skills"])):
-        skill = tracker["skills"][i]
-        skill_levels[skill] = f"Level {i + 1}"
+    for skill in tracker["skills"]:
         usage_count[skill] = 0
 
-    # Nested loop to count usage and record which project uses each skill
-    skill_project_map = {skill: [] for skill in tracker["skills"]}
     for project in tracker["projects"]:
         for skill in tracker["skills"]:
             if skill.lower() in project["tech"].lower():
@@ -72,14 +76,13 @@ def skill_levels():
                 usage_count[skill] += 1
                 skill_project_map[skill].append(project["title"])
 
-    # Sort skills by usage frequency
     sorted_skills = sorted(usage_count.items(), key=lambda x: x[1], reverse=True)
 
     first_python_project, tries = find_first_project_with("Python")
 
     return render_template(
         'levels.html',
-        skill_levels=skill_levels,
+        years_of_experience=years_of_experience,
         usage_count=usage_count,
         sorted_skills=sorted_skills,
         matches=matches,
