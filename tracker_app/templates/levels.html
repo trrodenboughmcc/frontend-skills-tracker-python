@@ -117,9 +117,9 @@ function sortTable(colIndex) {
         const valB = b.cells[colIndex].innerText.trim();
 
         if (isNumeric) {
-            return parseInt(valB) - parseInt(valA); // Descending numeric
+            return parseInt(valB) - parseInt(valA);
         } else {
-            return valA.localeCompare(valB); // Alphabetical
+            return valA.localeCompare(valB);
         }
     });
 
@@ -133,25 +133,21 @@ document.getElementById("skill-search").addEventListener("input", function () {
 
     rows.forEach(row => {
         const skillName = row.querySelector(".skill-name").textContent.toLowerCase();
+        const isMatch = skillName.includes(searchValue);
 
-        if (searchValue === "") {
-            // If the search box is cleared, show all rows
+        if (searchValue === "" || isMatch) {
+            // Make row visible first
             row.style.display = "";
             row.classList.remove("fade-out");
+            // Trigger reflow to allow animation reset
+            void row.offsetWidth;
             row.classList.add("fade-in");
         } else {
-            const isMatch = skillName.includes(searchValue);
-            if (isMatch) {
-                row.classList.remove("fade-out");
-                row.classList.add("fade-in");
-                row.style.display = "";
-            } else {
-                row.classList.remove("fade-in");
-                row.classList.add("fade-out");
-                setTimeout(() => {
-                    row.style.display = "none";
-                }, 300);
-            }
+            row.classList.remove("fade-in");
+            row.classList.add("fade-out");
+            setTimeout(() => {
+                row.style.display = "none";
+            }, 300);
         }
     });
 });
