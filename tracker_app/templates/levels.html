@@ -77,7 +77,7 @@
                 <tr>
                     <th onclick="sortTable(0)">Skill <span class="sort-icon">⇅</span></th>
                     <th onclick="sortTable(1)">Used In Projects <span class="sort-icon">⇅</span></th>
-                    <th onclick="sortTable(2)">Level <span class="sort-icon">⇅</span></th>
+                    <th onclick="sortTable(2)">Years of Experience <span class="sort-icon">⇅</span></th>
                     <th>Projects</th>
                 </tr>
             </thead>
@@ -86,7 +86,7 @@
                 <tr>
                     <td class="skill-name">{{ skill }}</td>
                     <td>{{ count }}</td>
-                    <td>{{ skill_levels[skill] }}</td>
+                    <td>{{ years_of_experience[skill] }}</td>
                     <td>
                         <ul class="small-list">
                         {% for project in skill_project_map[skill] %}
