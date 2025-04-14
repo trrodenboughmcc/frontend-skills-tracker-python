@@ -3,16 +3,17 @@ import os
 
 app = Flask(__name__)
 
+# Tracker data with skills (name + years of experience) and projects
 tracker = {
     "skills": [
-        "Python",
-        "Flask",
-        "SQL",
-        "HTML",
-        "CSS",
-        "JavaScript",
-        "Git",
-        "API"
+        {"name": "Python", "experience": 3},
+        {"name": "Flask", "experience": 2},
+        {"name": "SQL", "experience": 2},
+        {"name": "HTML", "experience": 4},
+        {"name": "CSS", "experience": 4},
+        {"name": "JavaScript", "experience": 3},
+        {"name": "Git", "experience": 5},
+        {"name": "API", "experience": 2}
     ],
     "projects": [
         {
@@ -48,45 +49,48 @@ tracker = {
     ]
 }
 
+@app.route('/')
+def home():
+    return render_template('index.html', tracker=tracker)
+
 @app.route('/skill-levels')
 def skill_levels():
-    # Map realistic years of experience to each skill
-    years_of_experience = {
-        "Python": 3,
-        "Flask": 2,
-        "SQL": 2,
-        "HTML": 4,
-        "CSS": 4,
-        "JavaScript": 3,
-        "Git": 5,
-        "API": 2
-    }
-
     usage_count = {}
     matches = []
-    skill_project_map = {skill: [] for skill in tracker["skills"]}
+    skill_project_map = {}
 
-    for skill in tracker["skills"]:
+    # Initialize counters and mappings
+    for skill_obj in tracker["skills"]:
+        skill = skill_obj["name"]
         usage_count[skill] = 0
+        skill_project_map[skill] = []
 
+    # Match skills to projects
     for project in tracker["projects"]:
-        for skill in tracker["skills"]:
+        for skill_obj in tracker["skills"]:
+            skill = skill_obj["name"]
             if skill.lower() in project["tech"].lower():
                 matches.append((project["title"], skill))
                 usage_count[skill] += 1
                 skill_project_map[skill].append(project["title"])
 
+    # Sort by usage count (most-used skills first)
     sorted_skills = sorted(usage_count.items(), key=lambda x: x[1], reverse=True)
 
+    # Map skill names to years of experience
+    years_of_experience = {s["name"]: s["experience"] for s in tracker["skills"]}
+
+    # Find first project with Python
     first_python_project, tries = find_first_project_with("Python")
 
     return render_template(
         'levels.html',
-        years_of_experience=years_of_experience,
+        tracker=tracker,
         usage_count=usage_count,
         sorted_skills=sorted_skills,
         matches=matches,
         skill_project_map=skill_project_map,
+        years_of_experience=years_of_experience,
         first_python_project=first_python_project,
         tries=tries
     )
