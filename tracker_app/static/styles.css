@@ -124,3 +124,11 @@ tr.highlighted {
   background-color: #fff8d0;
   font-weight: bold;
 }
+
+.card.active-skill .skill-link {
+  color: white;
+}
+
+.card.active-skill .skill-link:hover {
+  color: #ecf0f1;
+}
