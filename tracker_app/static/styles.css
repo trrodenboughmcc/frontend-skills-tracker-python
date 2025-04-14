@@ -120,3 +120,7 @@ button#clear-filter:hover {
   text-decoration: underline;
 }
 
+tr.highlighted {
+  background-color: #fff8d0;
+  font-weight: bold;
+}
