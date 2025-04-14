@@ -90,7 +90,8 @@ def skill_levels():
         years_of_experience=years_of_experience,
         first_python_project=first_python_project,
         tries=tries,
-        highlighted_rows=highlighted_rows
+        highlighted_rows=highlighted_rows,
+        selected_skill=selected_skill  
     )
 
 def find_first_project_with(skill_name):
