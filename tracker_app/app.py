@@ -54,36 +54,38 @@ def home():
 
 @app.route('/skill-levels')
 def skill_levels():
-    # Generate levels using range()
     skill_levels = {}
+    usage_count = {}
+    matches = []
+
     for i in range(len(tracker["skills"])):
         skill = tracker["skills"][i]
         skill_levels[skill] = f"Level {i + 1}"
+        usage_count[skill] = 0
 
-    # Match skills to projects (nested loop)
-    matches = []
+    # Nested loop to count usage and record which project uses each skill
+    skill_project_map = {skill: [] for skill in tracker["skills"]}
     for project in tracker["projects"]:
         for skill in tracker["skills"]:
             if skill.lower() in project["tech"].lower():
                 matches.append((project["title"], skill))
+                usage_count[skill] += 1
+                skill_project_map[skill].append(project["title"])
 
-    # First project using 'Python' (while + break)
+    # Sort skills by usage frequency
+    sorted_skills = sorted(usage_count.items(), key=lambda x: x[1], reverse=True)
+
     first_python_project, tries = find_first_project_with("Python")
-
-    # Filter out blank project titles using continue
-    filtered_projects = []
-    for p in tracker["projects"]:
-        if not p["title"].strip():
-            continue
-        filtered_projects.append(p)
 
     return render_template(
         'levels.html',
         skill_levels=skill_levels,
+        usage_count=usage_count,
+        sorted_skills=sorted_skills,
         matches=matches,
+        skill_project_map=skill_project_map,
         first_python_project=first_python_project,
-        tries=tries,
-        filtered_projects=filtered_projects
+        tries=tries
     )
 
 def find_first_project_with(skill_name):
