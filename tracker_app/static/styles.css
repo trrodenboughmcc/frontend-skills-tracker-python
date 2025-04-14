@@ -111,13 +111,13 @@ button#clear-filter:hover {
 
 .skill-link {
   font-size: 0.8em;
-  color: #888;
+  color: white;
   text-decoration: none;
 }
 
 .skill-link:hover {
-  color: #3498db;
   text-decoration: underline;
+  color: #ecf0f1;
 }
 
 tr.highlighted {
