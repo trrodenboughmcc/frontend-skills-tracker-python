@@ -108,3 +108,15 @@ button#clear-filter {
 button#clear-filter:hover {
     background-color: #c0392b;
 }
+
+.skill-link {
+  font-size: 0.8em;
+  color: #888;
+  text-decoration: none;
+}
+
+.skill-link:hover {
+  color: #3498db;
+  text-decoration: underline;
+}
+
