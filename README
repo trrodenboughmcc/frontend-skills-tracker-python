@@ -97,7 +97,7 @@ This is a simple web app built with Python and Flask. It lets you list the **ski
     - Name: skills-tracker
     - Runtime: Python
     - Build Command: (leave the default selection in there)
-    - Start Command: python app.py
+    - Start Command: python tracker_app/app.py
     - Environment: Python 3
     - Region: Choose one near you
     - Click "Create Web Service"
