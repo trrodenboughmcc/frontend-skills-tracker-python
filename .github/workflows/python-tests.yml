@@ -16,6 +16,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - name: Wake backend before frontend tests
+      run: |
+        echo "Warming up backend"
+        curl -f --retry 5 --retry-delay 5 https://skills-tracker-backend.onrender.com/api/skills
+    
     - name: Checkout repository
       uses: actions/checkout@v3
 
