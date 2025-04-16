@@ -17,6 +17,14 @@ def home():
     }
     return render_template('index.html', tracker=tracker)
 
+@app.route('/health')
+def health():
+    try:
+        r = requests.get(f"{BACKEND_API_URL}/skills", timeout=5)
+        return {"status": "ok", "code": r.status_code}, 200
+    except Exception as e:
+        return {"status": "backend unreachable", "error": str(e)}, 502
+
 @app.route('/skill-levels')
 def skill_levels():
     selected_skill = request.args.get('skill', '').strip().lower()
