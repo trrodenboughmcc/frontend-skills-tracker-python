@@ -1,16 +1,22 @@
-name: Run Python Unit Tests
+name: Run Full Frontend Test Suite
 
 on:
   push:
-    branches: [main]
+    branches: [ main ]
   pull_request:
+    branches: [ main ]
+
+permissions:
+  contents: read
+  actions: read
+  id-token: write
 
 jobs:
   test:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
+    - name: Checkout repository
       uses: actions/checkout@v3
 
     - name: Set up Python
@@ -22,9 +28,26 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
-        pip install pytest
 
-    - name: Run tests
-      env:
-        PYTHONPATH: ${{ github.workspace }} 
-      run: pytest
+    - name: Run unit and integration tests
+      run: |
+        echo "Running UNIT and INTEGRATION tests"
+        export PYTHONPATH=.
+        pytest -v \
+          tests/test_app.py \
+          tests/integration/ \
+          --junitxml=test-results/unit-integration.xml
+
+    - name: Run system tests
+      run: |
+        echo "Running SYSTEM tests"
+        export PYTHONPATH=.
+        pytest -v tests/system/ \
+          --junitxml=test-results/system.xml
+
+    - name: Run system integration tests
+      run: |
+        echo "Running SYSTEM INTEGRATION tests"
+        export PYTHONPATH=.
+        pytest -v tests/system_integration/ \
+          --junitxml=test-results/system-integration.xml
