@@ -1,7 +1,7 @@
 import requests
 
 # Replace with your deployed frontend URL
-FRONTEND_URL = "https://your-frontend-app.onrender.com"
+FRONTEND_URL = "https://frontend-skills-tracker-python.onrender.com"
 
 def test_homepage_renders_with_skills():
     response = requests.get(f"{FRONTEND_URL}/")
