@@ -31,12 +31,12 @@ jobs:
 
     - name: Run unit and integration tests
       run: |
-        echo "Running UNIT and INTEGRATION tests"
-        export PYTHONPATH=.
-        pytest -v \
-          tests/test_app.py \
-          tests/integration/ \
-          --junitxml=test-results/unit-integration.xml
+          echo "Running UNIT and INTEGRATION tests"
+          export PYTHONPATH=.
+          pytest -v \
+            tests/unit/ \
+            tests/integration/ \
+            --junitxml=test-results/unit-integration.xml
 
     - name: Run system tests
       run: |
